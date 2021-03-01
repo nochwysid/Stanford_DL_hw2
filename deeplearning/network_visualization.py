@@ -31,7 +31,15 @@ def compute_saliency_maps(X, y, model):
     # to each input image. You first want to compute the loss over the correct   #
     # scores, and then compute the gradients with torch.autograd.gard.           #
     ##############################################################################
-    pass
+    #credit to Aditya Rastogi's blog on netowork visualization
+    s = model(X)
+    #max_score_index = scores.argmax()
+    #max_score = scores[0, max_score_index]
+    #max_score.backward()
+    #saliency, _ = torch.max(X.grad.data.abs(),dim=1)
+    scores = s.gather(1, y.view(-1,1)).squeeze()
+    saliency = torch.autograd.grad(scores, X, torch.ones(scores.shape))[0]
+    saliency = torch.sum(saliency, 1)
     ##############################################################################
     #                             END OF YOUR CODE                               #
     ##############################################################################
