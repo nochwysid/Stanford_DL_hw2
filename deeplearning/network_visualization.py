@@ -116,11 +116,11 @@ def update_class_visulization(model, target_y, l2_reg, learning_rate, img):
     # L2 regularization term!                                              #
     # Be very careful about the signs of elements in your code.            #
     ########################################################################
-    scores = model(img)[:, target_y]
-    scores.backward()
+    scores = model(img)
+    (scores[:, target_y] - l2_reg * torch.norm(img.data)).backward()
     
-    grad = img.grad.data - l2_reg * img.grad.data
-    img.data += learning_rate * grad/torch.norm(grad)
+    dimg = learning_rate * img.grad.data
+    img.data += dimg.data
     img.grad.data = torch.zeros_like(img.grad.data)
     ########################################################################
     #                             END OF YOUR CODE                         #
