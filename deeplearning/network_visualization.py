@@ -32,14 +32,14 @@ def compute_saliency_maps(X, y, model):
     # scores, and then compute the gradients with torch.autograd.gard.           #
     ##############################################################################
     #credit to Aditya Rastogi's blog on netowork visualization
-    s = model(X)
+    scores = model(X)
     #max_score_index = scores.argmax()
     #max_score = scores[0, max_score_index]
     #max_score.backward()
     #saliency, _ = torch.max(X.grad.data.abs(),dim=1)
-    scores = s.gather(1, y.view(-1,1)).squeeze()
-    saliency = torch.autograd.grad(scores, X, torch.ones(scores.shape))[0]
-    saliency = torch.sum(saliency, 1)
+    scores = scores.gather(1, y.view(-1,1)).squeeze()
+    scores.backward(torch.FloatTensor([1.0]*scores.shape[0]))
+    saliency, _ = torch.max(X.grad.data.abs(), dim=1)    
     ##############################################################################
     #                             END OF YOUR CODE                               #
     ##############################################################################
@@ -77,7 +77,17 @@ def make_fooling_image(X, target_y, model):
     # in fewer than 100 iterations of gradient ascent.                           #
     # You can print your progress over iterations to check your algorithm.       #
     ##############################################################################
-    pass
+    index = -1
+    
+    while index != target_y:
+        scores = model(X_fooling)
+        max_val, index = torch.max(scores, 1)
+        scores[:, target_y].backward()
+        dX_fooling = learning_rate * X_fooling.grad.data / torch.norm(X_fooling.grad.data)
+        X_fooling.data += dX_fooling.data
+        X_fooling.grad.data = torch.zeros_like(X_fooling.grad.data)
+        
+        
     ##############################################################################
     #                             END OF YOUR CODE                               #
     ##############################################################################
