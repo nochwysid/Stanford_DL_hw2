@@ -120,6 +120,7 @@ def update_class_visulization(model, target_y, l2_reg, learning_rate, img):
     (scores[:, target_y] - l2_reg * (torch.norm(img.data)**2)).backward()
     dimg = learning_rate * img.grad.data / torch.norm(img.grad.data)
     img.data += dimg.data
+    img.grad.data = torch.zeros_like(img.grad.data)
     ########################################################################
     #                             END OF YOUR CODE                         #
     ########################################################################
