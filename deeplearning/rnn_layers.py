@@ -305,7 +305,7 @@ def lstm_step_backward(dnext_h, dnext_c, cache):
     # HINT: For sigmoid and tanh you can compute local derivatives in terms of  #
     # the output value from the nonlinearity.                                   #
     #############################################################################
-    pass
+    #pass
     H = dnext_h.shape[1]
     concat_vec, x, Wx, Wh, i_t, f_t, o_t, g_t, c_prime, i_prime, next_c, next_h, prev_c, prev_h = cache
     dconcat_vec = np.zeros(concat_vec.shape)
@@ -415,7 +415,7 @@ def lstm_backward(dh, cache):
     # TODO: Implement the backward pass for an LSTM over an entire timeseries.  #
     # You should use the lstm_step_backward function that you just defined.     #
     #############################################################################
-    pass
+    #pass
     #retrieve shapes needed for dx
     N,T,H = dh.shape
     shapes = cache[0]
